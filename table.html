@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixed Column until <td> value changes</title>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .sticky-col {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        background-color: #fff; /* optional: background color */
+    }
+    .scrollable {
+        overflow-x: auto;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        var $stickyColumn = $('.sticky-col');
+        var topOffset = $stickyColumn.offset().top;
+
+        $(window).scroll(function(){
+            if($(window).scrollTop() > topOffset){
+                $stickyColumn.addClass('fixed');
+            }
+            else{
+                $stickyColumn.removeClass('fixed');
+            }
+        });
+
+        var originalValue = $stickyColumn.text(); // 初期値を取得
+
+        // 値が変わるまで監視
+        setInterval(function(){
+            if($stickyColumn.text() !== originalValue){ // 値が変わったら
+                $stickyColumn.removeClass('fixed'); // 固定クラスを削除
+                return;
+            }
+        }, 100); // 100ミリ秒ごとにチェック
+    });
+</script>
+</head>
+<body>
+
+<div class="scrollable">
+    <table>
+        <thead>
+            <tr>
+                <th class="sticky-col">Fixed Column 1</th>
+                <th>Column 2</th>
+                <th>Column 3</th>
+                <th>Column 4</th>
+                <!-- Add more columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="sticky-col">Data 1</td>
+                <td>Data 2</td>
+                <td>Data 3</td>
+                <td>Data 4</td>
+                <!-- Add more rows and data as needed -->
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
