@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Mobile Form with Bootstrap 5</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center mt-2">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">ヘッダー</div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <label for="Data1" class="col-3 col-form-label col-form-label-sm">日付</label>
+                            <div class="col-9">
+                                <input type="date" class="form-control form-control-sm" id="Data1">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Data2" class="col-3 col-form-label col-form-label-sm">名前</label>
+                            <div class="col-9">
+                                <input type="text" class="form-control form-control-sm" id="Data2">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Data3" class="col-3 col-form-label col-form-label-sm">選択1</label>
+                            <div class="col-9">
+                                <select id="Data3" class="form-select form-select-sm" style="background-color: yellow;">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Data4" class="col-3 col-form-label col-form-label-sm">選択2</label>
+                            <div class="col-9">
+                                <select id="Data4" class="form-select form-select-sm">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <label for="Data5" class="col-3 col-form-label col-form-label-sm">選択3</label>
+                            <div class="col-9">
+                                <input type="text" class="form-control form-control-sm" id="Data5" list="list5">
+                                <datalist id="list5">
+                                    <option value="data1"></option>
+                                    <option value="data2"></option>
+                                    <option value="data3"></option>
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="Data6" class="col-3 col-form-label col-form-label-sm">テキスト</label>
+                            <div class="col-12">
+                                <input type="text" class="form-control form-control-sm" id="Data6">
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center">
+                            <div class="col-4">
+                                <button type="button" class="btn btn-primary w-100">保存</button>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-secondary w-100">閉じる</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
