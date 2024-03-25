@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Form Example</title>
+</head>
+<body>
+
+<h2>JavaScript Form Example</h2>
+
+<div id="formContainer">
+  <!-- フォームがここに追加されます -->
+</div>
+
+<script>
+// JavaScriptでフォームを作成する関数
+function createForm() {
+  // フォーム要素を作成
+  var form = document.createElement("form");
+  form.setAttribute("id", "myForm");
+
+  // テキスト入力フィールドを作成
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("name", "username");
+  input.setAttribute("placeholder", "Enter your username");
+  form.appendChild(input);
+
+  // 送信ボタンを作成
+  var submitBtn = document.createElement("input");
+  submitBtn.setAttribute("type", "submit");
+  submitBtn.setAttribute("value", "Submit");
+  form.appendChild(submitBtn);
+
+  // フォームをページに追加
+  document.getElementById("formContainer").appendChild(form);
+
+  // フォームの送信時の処理を設定
+  form.addEventListener("submit", function(event) {
+    event.preventDefault(); // デフォルトの動作をキャンセル
+    var formData = new FormData(form);
+    var username = formData.get("username");
+    alert("Submitted Username: " + username);
+  });
+}
+
+// ページの読み込みが完了したらフォームを作成
+document.addEventListener("DOMContentLoaded", function() {
+  createForm();
+});
+</script>
+
+</body>
+</html>

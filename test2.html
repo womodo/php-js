@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jQuery Form Example</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<h2>jQuery Form Example</h2>
+
+<div id="formContainer">
+  <!-- フォームがここに追加されます -->
+</div>
+
+<script>
+// ページが読み込まれたときに実行される処理
+$(document).ready(function() {
+  createForm(); // フォームを作成
+});
+
+// フォームを作成する関数
+function createForm() {
+  // フォーム要素を作成
+  var form = $('<form id="myForm"></form>');
+
+  // テキスト入力フィールドを作成
+  var input = $('<input type="text" name="username" placeholder="Enter your username">');
+
+  // 送信ボタンを作成
+  var submitBtn = $('<input type="submit" value="Submit">');
+
+  // フォームに入力フィールドと送信ボタンを追加
+  form.append(input, submitBtn);
+
+  // フォームをページに追加
+  $('#formContainer').append(form);
+
+  // フォームの送信時の処理を設定
+  form.on('submit', function(event) {
+    event.preventDefault(); // デフォルトの動作をキャンセル
+    var formData = form.serializeArray();
+    var username = formData[0].value;
+    alert("Submitted Username: " + username);
+  });
+}
+</script>
+
+</body>
+</html>
