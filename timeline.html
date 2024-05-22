@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+
+<body>
+    <canvas id="chart" style="width:100%; height: 200px;"></canvas>
+    <script>
+        // ツールチップの位置
+        Chart.Tooltip.positioners.myCustomPositioner = function (elements, eventPosition) {
+            if(elements.length){ // to prevent errors in the console
+                const { x, y, base, height } = elements[0].element; // _model doesn't exist anymore
+                // const height = !base ? 0 : base - y;// so it doesn't break in combo graphs like lines + bars
+                return {
+                    x: (base + x) / 2,
+                    y: y + (height / 2),
+                    xAlign: 'center',
+                    yAlign: 'top',
+                };
+            }
+            return false; // without this it gets stuck in the last active tooltip 
+        };
+
+        // カスタムプラグインの定義
+        const groupedLabelsPlugin = {
+            id: 'groupedLabelsPlugin',
+            beforeInit: function(chart) {
+                const groupedLabels = {};
+                const datasets = chart.config.data.datasets;
+
+                // ラベルをグループ化
+                datasets.forEach((dataset, datasetIndex) => {
+                    const label = dataset.label;
+                    if (!groupedLabels[label]) {
+                        groupedLabels[label] = [];
+                    }
+                    groupedLabels[label].push(datasetIndex);
+                });
+
+                // 元のレジェンド生成関数を保存
+                const originalLegendCallback = chart.options.plugins.legend.onClick;
+
+                // レジェンドクリック時の動作をカスタマイズ
+                chart.options.plugins.legend.onClick = function(e, legendItem) {
+                    const label = legendItem.text;
+                    const datasetIndices = groupedLabels[label];
+                    const meta = chart.getDatasetMeta(datasetIndices[0]);
+                    const alreadyHidden = meta.hidden === null ? chart.data.datasets[datasetIndices[0]].hidden : meta.hidden;
+
+                    // 全データセットの可視性を切り替え
+                    datasetIndices.forEach(index => {
+                        chart.getDatasetMeta(index).hidden = !alreadyHidden;
+                    });
+
+                    chart.update();
+                };
+
+                // カスタムレジェンドラベル生成
+                chart.options.plugins.legend.labels.generateLabels = function(chart) {
+                    const datasets = chart.data.datasets;
+                    const labels = [];
+
+                    Object.keys(groupedLabels).forEach((label, i) => {
+                        const datasetIndex = groupedLabels[label][0];
+                        const meta = chart.getDatasetMeta(datasetIndex);
+                        const style = meta.controller.getStyle();
+
+                        labels.push({
+                            text: label,
+                            fillStyle: style.backgroundColor,
+                            hidden: meta.hidden,
+                            lineCap: style.borderCapStyle,
+                            lineDash: style.borderDash,
+                            lineDashOffset: style.borderDashOffset,
+                            lineJoin: style.borderJoinStyle,
+                            lineWidth: style.borderWidth,
+                            strokeStyle: style.borderColor,
+                            pointStyle: style.pointStyle,
+                            rotation: style.rotation,
+                        });
+                    });
+
+                    return labels;
+                };
+            }
+        };
+
+        function getFormattedDate(date1, date2) {
+            const year1 = date1.getFullYear();
+            const month1 = String(date1.getMonth() + 1).padStart(2, '0');
+            const day1 = String(date1.getDate()).padStart(2, '0');
+            const hour1 = date1.getHours();
+            const minute1 = String(date1.getMinutes()).padStart(2, '0');
+
+            const year2 = date2.getFullYear();
+            const month2 = String(date2.getMonth() + 1).padStart(2, '0');
+            const day2 = String(date2.getDate()).padStart(2, '0');
+            const hour2 = date2.getHours();
+            const minute2 = String(date2.getMinutes()).padStart(2, '0');
+
+            var diff = date2 - date1;
+            diff = String(diff / 60 / 1000) + '分';
+
+            // if ((year1+month1+day1) == (year2+month2+day2)) {
+            //     return `${year1}-${month1}-${day1} ${hour1}:${minute1}～${hour2}:${minute2} (${diff})`; 
+            // } else {
+            //     return `${year1}-${month1}-${day1} ${hour1}:${minute1} ～ ${year2}-${month2}-${day2} ${hour2}:${minute2}`; 
+            // }
+            return `${hour1}:${minute1}～${hour2}:${minute2} (${diff})`; 
+        }
+
+        var ctx = document.getElementById('chart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Project 1", "Project 2", "Project 3"],
+                datasets: [{
+                    label: 'Task 1',
+                    data: [
+                        null,
+                        [new Date('2021-09-11T08:15:00'), new Date('2021-09-11T10:00:00')]
+                    ],
+                    backgroundColor: "red",
+                },
+                {
+                    label: 'Task 2',
+                    data: [
+                        [new Date('2021-09-11T10:00:00'), new Date('2021-09-11T15:00:00')],
+                        [new Date('2021-09-11T10:00:00'), new Date('2021-09-11T10:15')]
+                    ],
+                    backgroundColor: "blue",
+                },
+                {
+                    label: 'Task 2',
+                    data: [
+                        [new Date('2021-09-11T17:00:00'), new Date('2021-09-11T18:00:00')],
+                        null
+                    ],
+                    backgroundColor: "blue",
+                },
+                {
+                    label: 'Task 3',
+                    data: [
+                        null,
+                        null,
+                        [new Date('2021-09-11T15:00:00'), new Date('2021-09-11T17:10:00')]
+                    ],
+                    backgroundColor: "orange",
+                },
+                ]
+            },
+            plugins: [
+                groupedLabelsPlugin
+            ],
+            options: {
+                animation: false,
+                responsive: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        // display: false,
+                        position: 'top',
+                        onClick: null,
+                    },
+                    title: {
+                        // display: true,
+                        text: 'Chart.js Floating Horizontal Bar Chartあ'
+                    },
+                    tooltip: {
+                        position: 'myCustomPositioner',
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                // console.log(tooltipItem);
+                                // console.log(tooltipItem.label);
+                                // console.log(tooltipItem.raw[0]);
+                                // console.log(tooltipItem.raw[1]);
+                                // const year0 = tooltipItem.raw[0].getFullYear();
+                                // const month0 = String(tooltipItem.raw[0].getMonth() + 1).padStart(2, '0');
+                                // const day0 = String(tooltipItem.raw[0].getDate()).padStart(2, '0');
+                                // const hour0 = tooltipItem.raw[0].getHours();
+                                // const minute0 = String(tooltipItem.raw[0].getMinutes()).padStart(2, '0');
+                                // const formattedDate0 = `${year0}-${month0}-${day0} ${hour0}:${minute0}`;
+                                // return formattedDate0 + ' ～ ' ;
+                                // return ['aaa',getFormattedDate(tooltipItem.raw[0]) + ' ～ ' + getFormattedDate(tooltipItem.raw[1])];
+                                return [
+                                    tooltipItem.dataset.label,
+                                    getFormattedDate(tooltipItem.raw[0], tooltipItem.raw[1])
+                                ];
+                            },
+                        },
+                    },
+                },
+                scales: {
+                    y: {
+                        stacked: true
+                    },
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'minute',
+                            displayFormats: {
+                                minute: 'HH:mm',
+                            },
+                            // Luxon format string
+                            // tooltipFormat: 'DD'
+                        },
+                        ticks: {
+                            stepSize: 30,
+
+                        },
+                        min: new Date('2021-09-11T08:00:00'),
+                        max: new Date('2021-09-11T18:30:00')
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>
