@@ -16,9 +16,9 @@
             $.ajax({
                 url: 'your_php_script.php',
                 dataType: 'json',
-                // beforeSend: function(xhr){
-                //     xhr.overrideMimeType("application/json;charset=utf-8");
-                // },
+                beforeSend: function(xhr){
+                    xhr.overrideMimeType("application/json;charset=utf-8");
+                },
                 success: function(data) {
                     console.log(data);
 
