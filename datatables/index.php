@@ -16,6 +16,23 @@
 #example_wrapper td {
     text-align: center;
 }
+
+.highlight td {
+    background-color: yellow !important;
+}
+
+
+table.table.dataTable.table-striped > tbody > tr:nth-of-type(2n) > * {
+    box-shadow: none !important;
+    color: var(--bs-table-color-state,var(--bs-table-color-type,var(--bs-table-color))) !important;
+}
+table.table.dataTable.table-striped > tbody > tr:nth-of-type(2n+1).selected > * {
+    box-shadow: inset 0 0 0 9999px rgba(var(--dt-row-stripe), 0.05) !important;
+    color: var(--bs-table-color-state,var(--bs-table-color-type,var(--bs-table-color))) !important;
+}
+table.table.dataTable > tbody > tr.selected a {
+    color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1)) !important;
+}
 </style>
 </head>
 <body>
@@ -24,7 +41,8 @@
         <table id="example" class="table table-striped table-bordered table-hover table-sm" style="width: 100%;">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>承認　<input type="checkbox" id="select-all"></th>
+                    <!-- <th></th> -->
                     <th>名前</th>
                     <th>ポジション</th>
                     <th>オフィス</th>
@@ -47,6 +65,7 @@
     <script>
         $(function() {
             var tableHeight = $(window).height() - 300;
+
             var table = new DataTable('#example', {
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/ja.json',  // 日本語化
@@ -57,11 +76,13 @@
                         buttons: [
                             'copy',
                             {
-                                text: 'Add',
-                                action: function (e, dt, node, config) {
-                                    alert('ボタンがクリックされました');
-                                }
-                            }
+                                text: 'GET',
+                                action: get_button,
+                                // action: function (e, dt, node, config) {
+                                //     alert('ボタンがクリックされました');
+                                // }
+                            },
+                            'showSelected'
                         ],
                     },
                     bottomStart: {
@@ -93,15 +114,15 @@
                     url: 'data.json',
                     // dataSrc: 'data',
                 },
-                // columns: [
-                //     { data: 'id', orderable: false, render: DataTable.render.select(), },
-                //     { data: 'name' },
-                //     { data: 'position' },
-                //     { data: 'office' },
-                //     { data: 'age' },
-                //     { data: 'start_date' },
-                //     { data: 'salary' },
-                // ],
+                columns: [
+                    { },                                // 0
+                    { data: 'name' },                   // 1
+                    { data: 'position' },               // 2
+                    { data: 'office' },                 // 3
+                    { data: 'age' },                    // 4
+                    { data: 'start_date' },             // 5
+                    { data: 'salary' },                 // 6
+                ],
                 columnDefs: [
                     {
                         targets: 0,
@@ -109,110 +130,83 @@
                         render: DataTable.render.select(),
                     },
                     {
-                        targets: 1,
-                        data: 'name',
-                    },
-                    {
-                        targets: 2,
-                        data: 'position',
-                    },
-                    {
                         targets: 3,
-                        data: 'office',
-                        render: function (data, type, row, meta) {
-                            return '<a href="#" name="office[' + meta["row"] + ']">' + data + '</a>';
+                        render: function(data, type, row, meta) {
+                            return '<a href="#" class="details-link" name="office[' + meta["row"] + ']">' + data + '</a>';
                         }
-                    },
-                    {
-                        targets: 4,
-                        data: 'age',
-                    },
-                    {
-                        targets: 5,
-                        data: 'start_date',
-                    },
-                    {
-                        targets: 6,
-                        data: 'salary',
                     }
                 ],
                 select: {
                     style: 'multi',
-                    selector: 'td:first-child',
-                    headerCheckbox: true,
+                    // selector: 'td:first-child',
+                    selector: 'td:first-child.dt-select',
+                    // headerCheckbox: true,
+                    headerCheckbox: false,
                 },
-                order: [[2, 'asc'], [3, 'desc']]
+                order: [[2, 'asc'], [3, 'desc']],
+
+                rowCallback: function(row, data) {
+                    if (data["office"] == '東京') {
+                        this.api().row(row).select();
+                    }
+                    if (data["office"] == '札幌') {
+                        $(row).find('input.dt-select-checkbox').prop('disabled', true);
+                        $(row).find('td').removeClass('dt-select');
+                    }
+                }
             });
 
 
-            // var tableHeight = $(window).height() - 300;
+            // 画面がリサイズされた時
+            $(window).resize(function() {
+                var newTableHeight = $(window).height() - 300;
+                $('.dt-scroll-body').css('max-height', newTableHeight + 'px');
+            });
 
-            // var table = $('#example').DataTable({
-            //     language: {
-            //         url: './js/ja.json',
-            //     },
-            //     ajax: {
-            //         "url": "data.json",
-            //         "type": "POST"
-            //     },
-            //     columnDefs: [
-            //         {
-            //             orderable: false,
-            //             render: DataTable.render.select(),
-            //             targets: 0
-            //         }
-            //     ],
-            //     select: {
-            //         style: 'os',
-            //         selector: 'td:first-child'
-            //     },
-            //     order: [[1, 'asc']],
-            //     columns: [
-            //         {
-            //             data: "id",
-            //             render: function(data, type, row, meta) {
-            //                 return '<input type="checkbox" class="row-checkbox" value="' + data + '">';
-            //             },
-            //             orderable: false,
-            //         },
-            //         { "data": "name" },
-            //         { "data": "position" },
-            //         { "data": "office" },
-            //         { "data": "age" },
-            //         { "data": "start_date" },
-            //         { "data": "salary" }
-            //     ],
-            //     paging: false,
-            //     scrollY: tableHeight + 'px',
-            //     scrollCollapse: true,
-            //     layout: {
-            //         topStart: {
-            //             buttons: [
-            //                 'copy',
-            //                 {
-            //                     text: 'Add',
-            //                     action: function (e, dt, node, config) {
-            //                         alert('ボタンがクリックされました');
-            //                     }
-            //                 }
-            //             ]
-            //         }
-            //     },
-            //     select: true,
-            // });
+            // 行のリンクをクリックした時
+            $('#example tbody').on('click', 'a.details-link', function() {
+                event.preventDefault();
 
-            // // 全選択チェックボックス
-            // $('#checkAll').click(function() {
-            //     var rows = table.rows({ 'search': 'applied' }).nodes();
-            //     $('input[type="checkbox"]', rows).prop('checked', this.checked);
-            // });
+                // クリックされたリンクの親の行を取得
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
 
-            // // 画面がリサイズされた時
-            // $(window).resize(function() {
-            //     var newTableHeight = $(window).height() - 300;
-            //     $('.dt-scroll-body').css('max-height', newTableHeight + 'px');
-            // });
+                // 行のデータを取得
+                var rowData = row.data();
+                console.log(rowData);
+
+                // 行に色を付ける
+                $('#example tbody tr').removeClass('highlight');  // 他の行のハイライトを解除
+                tr.addClass('highlight');
+            });
+
+            // 全選択チェックボックスをクリックした時
+            $('#select-all').on('click', function() {
+                var rows = table.rows({ 'search': 'applied' }).nodes();
+                var state = this.checked;
+                $.each(rows, function(index, row) {
+                    if (!$('input[type="checkbox"]', row).prop('disabled')) {
+                        if (state) {
+                            table.row(row).select();
+                        } else {
+                            table.row(row).deselect();
+                        }
+                    }
+                });
+            });
         });
+
+        // GETボタンを押した時
+        function get_button() {
+            var selectedData = [];
+            var table = $('#example').DataTable();
+            table.$('tr.selected').each(function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                selectedData.push(row.data());
+            });
+            console.log(selectedData);
+        }
 
     </script>
 </body>
