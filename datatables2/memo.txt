@@ -1,0 +1,91 @@
+1. 所属部門が「部(30)」「課(40)」「係(50)」「班(60)」
+※ 所属部門の下位層のラインコードのみ、追加・承認等の変更が行える
+
+・「班」の場合
+　⇒ 下位層のラインコードを取得 ⇒ ラインコードの select・リスト
+・「係」「課」「部」以上の部門の場合
+　⇒ 下位層の係・班を取得 ⇒ 係・班の select
+　⇒ 下位層のラインコードを取得 ⇒ ラインコードの select・リスト
+
+
+2. 所属部門の下位層にラインコードがない場合（製造部門以外の場合？）
+※ 追加・承認等の変更は行えない
+
+・所属「課」を確認
+　⇒ 所属部門の「課」を取得（所属部門が「係・班」の場合は上位層の「課」を取得）
+　⇒ 「生産システム課」の場合は、全課・全係・全班・全ラインの変更が可能？
+　⇒ 係・班の select
+　⇒ ラインコードの select
+
+
+3. 作業時間
+※ライン作業時間合計と労働時間との差分を「班」の時間にする
+・ラインコードから上位の「班」を取得
+⇒
+
+
+■ログイン ⇒ 部門コード取得 ⇒ SESSIONへ保管
+■検索 ⇒ 部門コードから取得したラインコードを対象 ⇒ 部門コードから取得したラインコードのうち、検索結果に含まれるラインコードのselect
+■追加 ⇒ 部門コードから取得したラインコードのselect
+
+
+■指定部門コードの下位層を取得：CTE
+WITH RECURSIVE SubDepartments AS (
+    SELECT child_department_id
+    FROM department_hierarchy
+    WHERE parent_department_id = 1  -- 指定部門コード
+  UNION
+    SELECT dh.child_department_id
+    FROM department_hierarchy dh
+    INNER JOIN SubDepartments sd ON dh.parent_department_id = sd.child_department_id
+)
+SELECT * 
+FROM SubDepartments sd
+INNER JOIN department_master dm ON sd.child_department_id = dm.department_id
+-- WHERE dm.level = 60 OR dm.level = 50; -- 係・班    -- WHERE dm.level = 70; -- ライン
+
+■部門コードの下位層を取得（Oracle DB）
+WITH SubDepartments(department_id, department_name, level) AS (
+    SELECT department_id, department_name, level
+    FROM department_master
+    WHERE department_id = 1 --指定部門コード
+    UNION ALL SELECT dm.department_id, dm.department_name, dm.level
+    FROM department_master dm
+    INNER JOIN department_hierarchy dh ON dm.department_id = dh.child_department_id
+    INNER JOIN SubDepartments sd ON dh.parent_department_id = sd.department_id
+)
+SELECT * FROM SubDepartments
+WHERE level = 70; -- ラインのレベル
+
+
+■指定部門コードの下位層を取得
+WITH RECURSIVE ParentDepartments AS (
+  SELECT dh.parent_department_id, dm.department_name, dm.level
+  FROM department_hierarchy dh
+  JOIN department_master dm ON dh.parent_department_id = dm.department_id
+  WHERE dh.child_department_id = 56 -- 指定部門コード
+  UNION ALL
+  SELECT dh.parent_department_id, dm.department_name, dm.level
+  FROM department_hierarchy dh
+  JOIN department_master dm ON dh.parent_department_id = dm.department_id
+  JOIN ParentDepartments pd ON dh.child_department_id = pd.parent_department_id
+)
+SELECT *
+FROM ParentDepartments
+-- WHERE level = 40; -- 課のレベル
+
+■指定部門コードの下位層を取得（Oracle DB）
+WITH ParentDepartments AS (
+  SELECT dh.parent_department_id, dm.department_name, dm.level
+  FROM department_hierarchy dh
+  JOIN department_master dm ON dh.parent_department_id = dm.department_id
+  WHERE dh.child_department_id = 56 -- 指定部門コード
+  UNION ALL
+  SELECT dh.parent_department_id, dm.department_name, dm.level
+  FROM department_hierarchy dh
+  JOIN department_master dm ON dh.parent_department_id = dm.department_id
+  JOIN ParentDepartments pd ON dh.child_department_id = pd.parent_department_id
+)
+SELECT *
+FROM ParentDepartments
+WHERE level = 40; -- 課のレベル
