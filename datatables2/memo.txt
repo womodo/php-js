@@ -116,3 +116,14 @@ WHERE level = 40; -- 課のレベル
 ・登録／変更
 　できない。表示のみ。
 　ライン名称は登録されているラインコードから取得。
+
+
+// ある条件の時には、チェックボックス変更無効
+<?php if ($var1 == 1) { ?>
+    $('#select-all').prop('disabled', true);
+    $(row).find('input.dt-select-checkbox').off('click');
+    $(row).find('td').removeClass('dt-select');
+    if (data['approved'] == '0') {
+        $(row).find('input.dt-select-checkbox').prop('disabled', true);
+    }
+<?php } ?>
