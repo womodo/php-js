@@ -1,0 +1,87 @@
+SELECT * FROM t_data
+WHERE work_date IS NOT NULL
+AND (
+( work_cd = '123', work_date IN ('2024-05-01','2024-05-07')) OR
+( work_cd = '124', work_date IN ('2024-05-02','2024-05-05')) OR
+( work_cd = '125', work_date IN ('2024-05-03') 
+)
+
+
+
+WITH date_conditions AS (
+    SELECT '123' AS work_cd, TO_DATE('2024-05-01', 'YYYY-MM-DD') AS work_date FROM DUAL
+    UNION ALL
+    SELECT '123', TO_DATE('2024-05-07', 'YYYY-MM-DD') FROM DUAL
+    UNION ALL
+    SELECT '124', TO_DATE('2024-05-02', 'YYYY-MM-DD') FROM DUAL
+    UNION ALL
+    SELECT '124', TO_DATE('2024-05-05', 'YYYY-MM-DD') FROM DUAL
+    UNION ALL
+    SELECT '125', TO_DATE('2024-05-03', 'YYYY-MM-DD') FROM DUAL
+)
+SELECT t_data.*
+FROM t_data
+JOIN date_conditions
+ON t_data.work_cd = date_conditions.work_cd
+AND t_data.work_date = date_conditions.work_date
+WHERE t_data.work_date IS NOT NULL;
+
+
+
+・UNION ALLを使用したクエリの分割:
+クエリを分割し、各条件を個別のクエリとして実行し、それらをUNION ALLで結合します。これにより、インデックスの使用が促進され、全表スキャンの回避が期待できます。
+
+SELECT * FROM t_data
+WHERE work_date IS NOT NULL
+AND work_cd = '123' AND work_date IN ('2024-05-01', '2024-05-07')
+UNION ALL
+SELECT * FROM t_data
+WHERE work_date IS NOT NULL
+AND work_cd = '124' AND work_date IN ('2024-05-02', '2024-05-05')
+UNION ALL
+SELECT * FROM t_data
+WHERE work_date IS NOT NULL
+AND work_cd = '125' AND work_date = '2024-05-03';
+
+
+
+
+・存在しないレコードの条件を取り除く:
+可能であれば、存在しないレコードに対する条件を事前に取り除くことも検討します。例えば、以下のようにサブクエリを使用して存在するwork_cdを確認することができます。
+
+WITH valid_work_cd AS (
+    SELECT DISTINCT work_cd
+    FROM t_data
+    WHERE work_cd IN ('123', '124', '125')
+)
+SELECT * FROM t_data
+WHERE work_date IS NOT NULL
+AND (
+    (work_cd = '123' AND work_date IN ('2024-05-01', '2024-05-07')) OR
+    (work_cd = '124' AND work_date IN ('2024-05-02', '2024-05-05')) OR
+    (work_cd = '125' AND work_date = '2024-05-03')
+)
+AND work_cd IN (SELECT work_cd FROM valid_work_cd);
+
+
+
+・UNION ALLの代わりにCTEを使用した例です。
+
+WITH date_conditions AS (
+    SELECT '123' AS work_cd, TO_DATE('2024-05-01', 'YYYY-MM-DD') AS work_date FROM DUAL
+    UNION ALL
+    SELECT '123', TO_DATE('2024-05-07', 'YYYY-MM-DD') FROM DUAL
+    UNION ALL
+    SELECT '124', TO_DATE('2024-05-02', 'YYYY-MM-DD') FROM DUAL
+    UNION ALL
+    SELECT '124', TO_DATE('2024-05-05', 'YYYY-MM-DD') FROM DUAL
+    UNION ALL
+    SELECT '125', TO_DATE('2024-05-03', 'YYYY-MM-DD') FROM DUAL
+)
+SELECT t_data.*
+FROM t_data
+JOIN date_conditions
+ON t_data.work_cd = date_conditions.work_cd
+AND t_data.work_date = date_conditions.work_date
+WHERE t_data.work_date IS NOT NULL;
+
