@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap 3 Treeview Example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .treeview ul {
+            list-style-type: none;
+        }
+        
+        .treeview li {
+            margin: 0;
+            padding: 0 12px;
+            line-height: 20px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .treeview li:before, .treeview li:after {
+            content: '';
+            position: absolute;
+            left: -12px;
+        }
+
+        .treeview li:before {
+            border-left: 1px solid #000;
+            bottom: 50px;
+            height: 100%;
+            top: 0;
+            width: 1px;
+        }
+
+        .treeview li:after {
+            border-top: 1px solid #000;
+            height: 20px;
+            top: 10px;
+            width: 25px;
+        }
+
+        .treeview li span {
+            cursor: pointer;
+        }
+
+        .treeview li:last-child:before {
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Treeview Example</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <ul class="treeview">
+                <li><span class="tree-toggle">Parent 1</span>
+                    <ul class="treeview" style="display: none;">
+                        <li><span class="tree-toggle">Child 1-1</span>
+                            <ul class="treeview" style="display: none;">
+                                <li><span>Subchild 1-1-1</span></li>
+                                <li><span>Subchild 1-1-2</span></li>
+                            </ul>
+                        </li>
+                        <li><span class="tree-toggle">Child 1-2</span>
+                            <ul class="treeview" style="display: none;">
+                                <li><span>Subchild 1-2-1</span></li>
+                                <li><span>Subchild 1-2-2</span></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><span class="tree-toggle">Parent 2</span>
+                    <ul class="treeview" style="display: none;">
+                        <li><span class="tree-toggle">Child 2-1</span>
+                            <ul class="treeview" style="display: none;">
+                                <li><span>Subchild 2-1-1</span></li>
+                                <li><span>Subchild 2-1-2</span></li>
+                            </ul>
+                        </li>
+                        <li><span class="tree-toggle">Child 2-2</span>
+                            <ul class="treeview" style="display: none;">
+                                <li><span>Subchild 2-2-1</span></li>
+                                <li><span>Subchild 2-2-2</span></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <label for="selected-value">Selected Value:</label>
+            <input type="text" id="selected-value" class="form-control" readonly>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Tree toggle function
+        $('.tree-toggle').click(function() {
+            $(this).parent().children('ul.treeview').toggle(200);
+        });
+
+        // On clicking a tree item, set the concatenated value in the input field
+        $('.treeview span').click(function() {
+            var selectedValue = $(this).text();
+            var fullPath = selectedValue;
+            $(this).parents('li').each(function() {
+                var parentText = $(this).children('span').first().text();
+                fullPath = parentText + ' > ' + fullPath;
+            });
+            $('#selected-value').val(fullPath);
+        });
+    });
+</script>
+
+</body>
+</html>
