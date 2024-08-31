@@ -106,15 +106,19 @@
             $(this).parent().children('ul.treeview').toggle(200);
         });
 
-        // On clicking a tree item, set the concatenated value in the input field
+        // On clicking a leaf node (no children), set the concatenated value in the input field
         $('.treeview span').click(function() {
-            var selectedValue = $(this).text();
-            var fullPath = selectedValue;
-            $(this).parents('li').each(function() {
-                var parentText = $(this).children('span').first().text();
-                fullPath = parentText + ' > ' + fullPath;
-            });
-            $('#selected-value').val(fullPath);
+            var $this = $(this);
+            // Check if this node has children or not
+            if ($this.siblings('ul').length === 0) {
+                var selectedValue = $this.text();
+                var fullPath = selectedValue;
+                $this.parents('li').each(function() {
+                    var parentText = $(this).children('span').first().text();
+                    fullPath = parentText + ' > ' + fullPath;
+                });
+                $('#selected-value').val(fullPath);
+            }
         });
     });
 </script>
