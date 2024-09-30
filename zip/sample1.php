@@ -34,6 +34,7 @@ foreach ($target_files as $zipFilePath) {
     $zip = new ZipArchive;
     if ($zip->open($zipFilePath) === TRUE) {
         echo "ZIPファイルを処理中： " . basename($zipFilePath) . "<br>";
+        echo "ZIPファイルの作成日時： " . date("Y-m-d H:i:s", filectime($zipFilePath)) . "<br>";
 
         // ZIPファイル内のファイル情報を格納する配列
         $files = [];
@@ -55,6 +56,7 @@ foreach ($target_files as $zipFilePath) {
         // ソートされた順番でCSVファイルを処理
         foreach ($files as $fileInfo) {
             echo "CSVファイルが見つかりました： " . $fileInfo["name"] . "<br>";
+            echo "CSVファイルの更新日時：" . date("Y-m-d H:i:s", $fileInfo["mtime"]) . "<br>";
 
             // CSVファイルの内容を直接メモリ上に読み込む
             $fp = $zip->getStream($fileInfo["name"]);
@@ -69,6 +71,7 @@ foreach ($target_files as $zipFilePath) {
                 echo "CSVファイルが開けませんでした： " . $fileInfo["name"] . "<br>";
             }
         }
+        echo "<br>";
 
     } else {
         echo "ZIPファイルが開けませんでした： " . basename($zipFilePath) . "<br>";
