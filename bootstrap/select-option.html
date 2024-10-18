@@ -1,74 +1,74 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="bootstrap.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: "Noto Sans JP", sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="bootstrap.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: "Noto Sans JP", sans-serif;
+    }
 
-        /* ドロップダウンのスタイル */
-        .custom-select {
-            position: relative;
-            width: 100px;
-        }
+    /* ドロップダウンのスタイル */
+    .custom-select {
+        position: relative;
+        width: 100px;
+    }
 
-        .custom-select .selected {
-            background-color: white;
-            border: 1px dotted lightgray;
-            cursor: pointer;
-            text-align: center;
-            vertical-align: middle;
-            height: 24px;
-        }
+    .custom-select .selected {
+        background-color: white;
+        border: 1px dotted lightgray;
+        cursor: pointer;
+        text-align: center;
+        vertical-align: middle;
+        height: 24px;
+    }
 
-        .custom-select .options {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 98%;
-            border: 1px solid #ccc;
-            background-color: white;
-            z-index: 1000;
-            text-align: center;
-            vertical-align: middle;
-        }
+    .custom-select .options {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 98%;
+        border: 1px solid #ccc;
+        background-color: white;
+        z-index: 1000;
+        text-align: center;
+        vertical-align: middle;
+    }
 
-        .custom-select .options div {
-            /* padding: 10px; */
-            cursor: pointer;
-        }
+    .custom-select .options div {
+        /* padding: 10px; */
+        cursor: pointer;
+    }
 
-        /* 各選択肢の個別背景色 */
-        .custom-select .options div.option-1 {
-            background-color: #ffdddd; /* 赤系 */
-        }
+    /* 各選択肢の個別背景色 */
+    .custom-select .options div.option-1 {
+        background-color: #ffdddd; /* 赤系 */
+    }
 
-        .custom-select .options div.option-2 {
-            background-color: #ddffdd; /* 緑系 */
-        }
+    .custom-select .options div.option-2 {
+        background-color: #ddffdd; /* 緑系 */
+    }
 
-        .custom-select .options div.option-3 {
-            background-color: #ddddff; /* 青系 */
-        }
+    .custom-select .options div.option-3 {
+        background-color: #ddddff; /* 青系 */
+    }
 
-        /* ホバー時の背景色変更 */
-        .custom-select .options div:hover {
-            filter: brightness(0.9);
-        }
+    /* ホバー時の背景色変更 */
+    .custom-select .options div:hover {
+        filter: brightness(0.9);
+    }
 
-        /* 空の選択肢のスタイル */
-        .custom-select .options div.option-empty {
-            background-color: #f0f0f0;
-            height: 22px;
-        }
-    </style>
+    /* 空の選択肢のスタイル */
+    .custom-select .options div.option-empty {
+        background-color: #f0f0f0;
+        height: 22px;
+    }
+</style>
 </head>
 <body>
 <div class="container">
