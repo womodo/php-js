@@ -1,0 +1,42 @@
+html,body{
+	height:100%;
+	margin:0;
+	padding:0;
+}
+
+* {
+	box-sizing:border-box;
+}
+
+.split-box{
+	position:absolute;
+	width:50%;
+	height:100%;
+	padding:1em;
+}
+
+.left-box {
+	left:0;
+	background:#000000;
+	color:#ffffff;
+}
+
+.right-box {
+	right:0;
+	overflow-y: scroll;
+	background:#ffffff;
+}
+
+.left-box a{
+	color:#ffffff;
+	display:block;
+}
+
+@media screen and (max-width:600px) { 
+	.split-box {
+		position:relative;
+		width:100%;
+		height:auto;
+
+	}
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タブ（jQuery）</title>
+    <style>
+        .tab {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 30px;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .tab-list {
+            display: flex;
+        }
+
+        .tab-menu {
+            align-items: center;
+            background-color: #ccc;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            flex-grow: 1;
+            height: 50px;
+            justify-content: center;
+        }
+
+        .tab-menu.current {
+            background-color: #85746c;
+        }
+
+        .content-box {
+            background-color: #ccc;
+            display: none;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .content-box img {
+            display: block;
+            height: auto;
+            width: 100%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(function () {
+            $('.js-content:first-of-type').css('display', 'block');
+            $('.js-tab').on('click', function () {
+                $('.current').removeClass('current');
+                $(this).addClass('current');
+                const index = $(this).index();
+                $('.js-content').hide().eq(index).fadeIn(300);
+            });
+        })
+    </script>
+</head>
+<body>
+    <div class="tab">
+        <ul class="tab-list">
+            <li class="tab-menu js-tab current">タブ1</li>
+            <li class="tab-menu js-tab">タブ2</li>
+            <li class="tab-menu js-tab">タブ3</li>
+        </ul>
+        <div class="content-group">
+            <div class="content-box js-content">
+                <img src="./images/dog01.jpg" alt="" />
+            </div>
+            <div class="content-box js-content">
+                <img src="./images/dog02.jpg" alt="" />
+            </div>
+            <div class="content-box js-content">
+                <img src="./images/dog03.jpg" alt="" />
+            </div>
+        </div>
+    </div>
+</body>
+</html>

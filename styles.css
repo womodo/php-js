@@ -1,0 +1,47 @@
+/* リセットCSS */
+body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+  }
+  
+  nav ul {
+    list-style-type: none;
+  }
+  
+  nav ul li {
+    display: inline;
+    margin-right: 20px;
+  }
+  
+  nav ul li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .container {
+    margin-top: 50px; /* 上部メニューの高さ分をコンテンツ下げる */
+    display: flex;
+  }
+  
+  aside {
+    background-color: #f4f4f4;
+    width: 200px;
+    padding: 20px;
+    overflow-y: auto; /* 縦方向のスクロールバーを表示 */
+  }
+  
+  main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto; /* 縦方向のスクロールバーを表示 */
+  }
+  

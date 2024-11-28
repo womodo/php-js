@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web NFC API サンプル</title>
+</head>
+<body>
+    <h1>Web NFC API サンプル</h1>
+    <button id="readNfcButton">NFCタグを読み取る</button>
+    <p id="message"></p>
+
+    <script>
+        // ボタンを取得
+        const readNfcButton = document.getElementById('readNfcButton');
+        const messageElement = document.getElementById('message');
+
+        // NFCタグを読み取る関数
+        async function readNfcTag() {
+            try {
+                // NFCリーダーのインスタンスを作成
+                const nfcReader = new NDEFReader();
+
+                // スキャンを開始
+                await nfcReader.scan();
+                messageElement.textContent = 'NFCタグをスキャン中...';
+
+                // タグが読み取られた時のイベントを設定
+                nfcReader.onreading = event => {
+                    const message = event.message;
+                    let text = '';
+
+                    // メッセージ内のレコードを表示
+                    for (const record of message.records) {
+                        if (record.recordType === 'text') {
+                            // テキストデータをデコード
+                            const textDecoder = new TextDecoder(record.encoding);
+                            text += `読み取ったテキスト: ${textDecoder.decode(record.data)}\n`;
+                        } else {
+                            text += '未対応のレコードタイプが読み取られました\n';
+                        }
+                    }
+
+                    messageElement.textContent = text;
+                };
+
+                nfcReader.onerror = error => {
+                    messageElement.textContent = `エラー: ${error}`;
+                };
+            } catch (error) {
+                messageElement.textContent = `NFC読み取りのエラー: ${error}`;
+            }
+        }
+
+        // ボタンがクリックされた時にNFCタグ読み取りを開始
+        readNfcButton.addEventListener('click', readNfcTag);
+    </script>
+</body>
+</html>

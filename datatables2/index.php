@@ -1,3 +1,6 @@
+<?php
+$var1 = 1;
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -118,6 +121,10 @@ $(function() {
                     // 'copy',
                     // 'showSelected',
                     {
+                        extend: 'copy',
+                        enabled: false,
+                    },
+                    {
                         text: '追加',
                         className: 'btn-add',
                         action: function(e, dt, node, config) {
@@ -144,6 +151,7 @@ $(function() {
         // Ajaxでデータ取得
         ajax: {
             url: 'getList.php',
+            type: 'post',
             data: {
                 user_id: 123,           // 引数
             },
@@ -331,7 +339,7 @@ function btn_approval(e, dt, node, config) {
 </head>
 <body>
     <div class="container mt-5">
-        <table id="example" class="table table-bordered table-hover table-sm">
+        <table id="example" class="table table-bordered table-hover table-sm" style="width: 100%;">
             <thead>
                 <tr>
                     <th>名前</th>

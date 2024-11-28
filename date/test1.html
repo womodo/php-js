@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="date" id="datePicker1">
+    <input type="date" id="datePicker2">
+    
+    <script>
+        document.getElementById('datePicker1').addEventListener('input', function() {
+            const input = this.value;
+            if (input.length === 7) { // YYYY-MMの形式
+                this.value = input + '-01'; // YYYY-MM-01に変換
+            }
+
+            document.getElementById('datePicker2').value = this.value;
+        });
+    </script>
+</body>
+</html>
