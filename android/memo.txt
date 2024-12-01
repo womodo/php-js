@@ -1,0 +1,57 @@
+1. SharedPreferences
+・目的: 永続的なデータ保存（アプリが終了してもデータを保持）。
+・主な用途: ユーザー設定、トグル状態、ログイン情報など、アプリ全体で使用する小規模なデータ。
+・データの保存場所: アプリの内部ストレージ（通常はXMLファイルとして保存）。
+・データのサイズ: 小規模なキーバリューデータ向け（文字列、数値、ブール値など）。
+・ライフサイクル: アプリが終了して再起動されてもデータは保持される。
+
+// 保存
+val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+val editor = sharedPreferences.edit()
+editor.putString("key", "value")
+editor.apply()
+
+// 読み込み
+val value = sharedPreferences.getString("key", "default_value")
+
+2. savedInstanceState
+・目的: アクティビティやフラグメントの一時的な状態を保存。
+・主な用途: アプリのプロセスが一時的に停止・破棄された後、状態を復元（例: 画面回転やメモリ不足）。
+・データの保存場所: 一時的なメモリ領域（Bundleオブジェクト内）。
+・データのサイズ: 小規模データ向け。Bundle内に保存できるデータに制限がある（シリアライズ可能なもの）。
+・ライフサイクル: アクティビティやフラグメントのライフサイクルに従い、アプリ終了時にはデータは失われる。
+
+// データの保存
+override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putString("key", "value")
+}
+
+// データの復元
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    val value = savedInstanceState?.getString("key") ?: "default_value"
+}
+
+違いのまとめ
+項目                SharedPreferences                   savedInstanceState
+目的                永続的なデータ保存                  一時的な状態保存
+スコープ            アプリ全体                          アクティビティやフラグメント単位
+ライフサイクル      アプリ終了後もデータは保持される    アクティビティが破棄されるとデータは消失
+データサイズ        小規模（キーバリュー型）            小規模（シリアライズ可能な型）
+データの保存場所    内部ストレージ（XMLファイル）       一時的なメモリ（Bundle）
+
+どちらを使うべきか？
+・アプリ終了後もデータを保持したい場合: SharedPreferences。
+・一時的なUI状態やセッションデータの保存: savedInstanceState。
+両方を組み合わせて使うことも可能です。例えば、画面回転時はsavedInstanceStateを使い、アプリ終了後も必要なデータはSharedPreferencesに保存する、というようにシナリオに応じて使い分けると良いです。
+
+
+
+https://chatgpt.com/share/674c4892-a350-800e-ad91-3ff3a8d2cabd
+https://chatgpt.com/share/674c46e4-5eac-800e-9cfb-07ab55c3b3d1
+
+
+
+
+
