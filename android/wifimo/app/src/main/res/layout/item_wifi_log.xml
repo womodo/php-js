@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp"
+    android:background="@drawable/table_row_border"
+    android:layout_marginTop="-1dp">
+
+    <!-- タイムスタンプ -->
+    <TextView
+        android:id="@+id/timestampTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="2024-12-08 15:30:45.123"
+        android:textSize="12sp" />
+
+    <!-- SSID -->
+    <TextView
+        android:id="@+id/ssidTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="MyNetwork"
+        android:textSize="12sp" />
+
+    <!-- BSSID -->
+    <TextView
+        android:id="@+id/bssidTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="MyNetwork"
+        android:textSize="12sp" />
+
+    <!-- 信号強度 -->
+    <TextView
+        android:id="@+id/rssiTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="-55"
+        android:textSize="12sp" />
+</TableRow>
