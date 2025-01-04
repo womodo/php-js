@@ -1,0 +1,101 @@
+サーバー側
+
+1. PowerShellでポートの状態を確認する
+PowerShellを使用して、ポート5985が開いているか確認できます。
+Test-NetConnection -ComputerName localhost -Port 5985
+
+結果の確認
+・TcpTestSucceeded : True と表示される場合、ポート5985は開いています。
+・TcpTestSucceeded : False と表示される場合、ポート5985は閉じています。
+
+
+2. ネットワーク設定での確認[*]
+ファイアウォール設定を確認して、ポート5985が許可されているか確認します。
+Get-NetFirewallRule | Where-Object { $_.DisplayName -like '*WinRM*' }
+
+表示されるルールの状態を確認
+・Enabled : True のルールが存在する場合、ファイアウォールでポート5985が許可されています。
+・該当するルールがなければ、ポート5985はブロックされています。
+
+
+3. ローカルでリスニング状態を確認する
+WinRMサービスがポート5985でリスニングしているかを確認するには、以下のコマンドを実行します。
+Get-NetTCPConnection -LocalPort 5985
+
+結果の確認
+・エントリが表示される場合、ポート5985でリスニングしています。
+・エントリが表示されない場合、リスニングしていません。
+
+
+4. リモートでポートをスキャンする
+別のPCから対象PCのポート5985に接続できるか確認します。
+Test-NetConnection -ComputerName 192.168.1.10 -Port 5985
+
+
+5. 解放されていない場合の対処
+ポート5985が閉じている場合、以下を確認してください：
+
+①WinRMサービスが有効か
+Get-Service WinRM
+
+状態がRunningでない場合は、サービスを開始します。
+Start-Service WinRM
+
+②ファイアウォールでポートが許可されているか[*]
+ポート5985をファイアウォールで手動で許可します。
+New-NetFirewallRule -Name "Allow WinRM" -DisplayName "Allow WinRM" -Protocol TCP -LocalPort 5985 -Action Allow
+
+③ネットワークプロファイルの確認[*]
+現在のネットワークプロファイルが「パブリック」だとファイアウォールルールが適用されない場合があります。
+Get-NetConnectionProfile
+
+
+
+→WinRMを有効
+Enable-PSRemoting -Force
+
+
+
+
+1. リモート管理を無効にする
+PowerShellを管理者権限で開き、以下のコマンドを実行します。
+Disable-PSRemoting -Force
+
+このコマンドは、以下を行います：
+・リモート接続のためのファイアウォールルールを削除します。
+・リモートセッションをリッスンするWinRMサービスを無効にします。
+
+
+2. WinRMサービスを停止する（必要に応じて）
+リモート管理を完全に無効化したい場合は、WinRMサービスも停止できます。
+Stop-Service WinRM
+Set-Service WinRM -StartupType Disabled
+
+
+3. ファイアウォール設定を確認・調整する
+Enable-PSRemoting は、PowerShellリモート接続を許可するファイアウォールルールを追加します。この設定を手動で削除したい場合、以下の手順を実行します。
+
+追加されたファイアウォールルールを確認
+Get-NetFirewallRule | Where-Object { $_.DisplayName -like '*WinRM*' }
+
+ルールを削除
+Get-NetFirewallRule | Where-Object { $_.DisplayName -like '*WinRM*' } | Remove-NetFirewallRule
+
+
+4. 確認
+リモート管理が無効になっているか確認します。
+Test-WSMan
+
+エラーが表示されれば、リモート管理が無効化されています。
+
+
+
+
+
+
+
+
+
+
+
+
