@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRコード作成</title>
+</head>
+<body>
+    <h2>QRコード作成</h2>
+    <table>
+        <tr>
+            <td>ラインコード</td>
+            <td><input type="text" id="lineCd" maxlength="6" list="lineCdList" style="width:70px;"></td>
+        </tr>
+        <tr>
+            <td>品目番号</td>
+            <td><input type="text" id="itemCd" maxlength="20" list="itemCdList" style="width:180px;"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button id="generateBtn">QRコード作成</button>
+                <button id="clearBtn">クリア</button>
+            </td>
+        </tr>
+    </table>
+
+    <div id="result"></div>
+    <div id="qrcode"></div>
+
+    <datalist id="lineCdList">
+        <option value=""></option>
+        <option value="314A09">314A09</option>
+        <option value="314A1A">314A1A</option>
+        <option value="314A2A">314A2A</option>
+        <option value="314A3A">314A3A</option>
+        <option value="314A4A">314A4A</option>
+    </datalist>
+
+    <datalist id="itemCdList">
+        <option value=""></option>
+        <option value="TEST-101">TEST-101</option>
+        <option value="TEST-102">TEST-102</option>
+        <option value="TEST-103">TEST-103</option>
+        <option value="TEST-104">TEST-104</option>
+        <option value="TEST-105">TEST-105</option>
+        <option value="T-201">T-201a</option>
+    </datalist>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        const lineCd = document.getElementById('lineCd');
+        const itemCd = document.getElementById('itemCd');
+        const generateBtn = document.getElementById('generateBtn');
+        const clearBtn = document.getElementById('clearBtn');
+
+        const resultContainer = document.getElementById('result');
+        const qrcodeContainer = document.getElementById('qrcode');
+        let qr;
+
+        // クリア
+        function clearQR() {
+            lineCd.value = '';
+            itemCd.value = '';
+            qrcodeContainer.innerHTML = '';
+            resultContainer.innerHTML = '';
+            qr = null;
+        }
+
+        // QRコード作成
+        function generateQR() {
+            qrcodeContainer.innerHTML = '';
+            resultContainer.innerHTML = '';
+            qr = null;
+
+            const lineCdVal = lineCd.value.trim();
+            const itemCdVal = itemCd.value.trim();
+            if (!lineCdVal || !itemCdVal) {
+                alert('両方の入力欄を入力してください');
+                return;
+            }
+
+            // 品目番号を30文字にする
+            const itemCdFixed = itemCdVal.padEnd(30, ' ');
+
+            // フォーマット指定
+            const combined = `AA${lineCdVal}      ${itemCdFixed}`;
+
+            resultContainer.innerHTML = `<pre>${combined.replace(/ /g, '·')}</pre>`;
+
+            qr = new QRCode(qrcodeContainer, {
+                text: combined,
+                width: 256,
+                height: 256,
+                correctLevel:QRCode.CorrectLevel.H
+            });
+        }
+
+        generateBtn.addEventListener('click', generateQR);
+        clearBtn.addEventListener('click', clearQR);
+    </script>
+</body>
+</html>
