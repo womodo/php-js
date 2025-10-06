@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>FormDataで送ってJSONを受け取る（複数項目）</title>
+</head>
+<body>
+  <input type="text" id="keyword" placeholder="キーワード">
+  <button id="sendBtn">送信</button>
+
+  <table border="1" id="resultTable">
+    <thead>
+      <tr><th>コード</th><th>名前</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    document.getElementById("sendBtn").addEventListener("click", function() {
+      const keyword = document.getElementById("keyword").value;
+
+      const formData = new FormData();
+      formData.append("keyword", keyword);
+
+      fetch("test2.php", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json()) // JSONを受け取る
+      .then(data => {
+        console.log(data); // デバッグ表示
+        const tbody = document.querySelector("#resultTable tbody");
+        tbody.innerHTML = "";
+
+        // dataは [{code:"apple", name:"リンゴ"}, ...] の形を想定
+        data.forEach(item => {
+          const tr = document.createElement("tr");
+          const tdCode = document.createElement("td");
+          const tdName = document.createElement("td");
+          tdCode.textContent = item.code;
+          tdName.textContent = item.name;
+          tr.appendChild(tdCode);
+          tr.appendChild(tdName);
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(error => {
+        console.error("通信エラー:", error);
+      });
+    });
+  </script>
+</body>
+</html>
