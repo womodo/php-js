@@ -1,0 +1,25 @@
+Microsoft Graph HTTP 要求を送信する
+{
+    "subject": "@{triggerBody().title}",
+    "body": {
+        "contentType": "html",
+        "content": "<div><div><at id='0'>管理部門</at><br>メッセージの内容です</div></div>
+<div>@{triggerBody().id}</div>
+<div>@{triggerBody().message}</div>
+<div><a href='@{triggerBody().link}'>Google</a></div>
+        <div style='color:darkred'>※ これは Power Automate により投稿されたメッセージです。</div>"
+    },
+    "mentions": [
+        {
+            "id": 0,
+            "mentionText": "管理部門",
+            "mentioned": {
+                "conversation": {
+                    "id": "xxx",
+                    "displayName": "管理部門",
+                    "conversationIdentityType": "team"
+                }
+            }
+        }
+    ]
+}
