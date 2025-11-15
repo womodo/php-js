@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Vega-Lite Chart</title>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-lite@6"></script>
+<script src="https://cdn.jsdelivr.net/npm/vega-embed@7"></script>
+</head>
+<body>
+
+<div id="vis"></div>
+
+<script>
+$(function() {
+    $.ajax({
+        url: 'get_cars.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            const spec = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+                "data": { "values": data },
+                "transform": [
+                    { "aggregate": [{"op": "sum", "field": "num_cars", "as": "num_cars"}], "groupby": ["Origin", "Cylinders"] }
+                ],
+                "hconcat": [
+                    {
+                        "vconcat": [
+                            {
+                                "width": 300,
+                                "height": 200,
+                                "encoding": {
+                                    "y": {"field": "Origin", "type": "ordinal"},
+                                    "x": {"field": "Cylinders", "type": "ordinal", "axis": {"orient": "top"}},
+                                    "tooltip": [
+                                        {"field": "Cylinders", "type": "ordinal", "title": "Cylinders:"},
+                                        {"field": "Origin", "type": "ordinal", "title": "Origin:"}
+                                    ]
+                                },
+                                "layer": [
+                                    {"mark": {"type": "rect", "tooltip": true}, "encoding": {"color": {"value": "white"}}},
+                                    {"mark": {"type": "text"}, "encoding": {"text": {"field": "num_cars", "type": "quantitative"}, "color": {"value": "black"}}}
+                                ]
+                            },
+                            {
+                                "height": 100,
+                                "width": 300,
+                                "layer": [
+                                    {
+                                        "transform": [{"aggregate": [{"op": "sum", "field": "num_cars", "as": "total_count"}], "groupby": ["Cylinders"]}],
+                                        "mark": {"type": "bar", "tooltip": true},
+                                        "encoding": {
+                                            "x": {"field": "Cylinders", "type": "ordinal", "axis": null},
+                                            "y": {"field": "total_count", "type": "quantitative", "axis": null, "scale": {"reverse":true}},
+                                            "color": {"value": "#f58518"},
+                                            "tooltip": [{"field": "Cylinders","type": "ordinal","title": "Cylinders:"},{"field":"total_count","type":"quantitative","title":"合計:"}]
+                                        }
+                                    },
+                                    {
+                                        "transform": [{"aggregate": [{"op": "sum", "field": "num_cars", "as": "total_count"}], "groupby": ["Cylinders"]}],
+                                        "mark": {"type": "text", "align": "center", "baseline": "top", "dy": 3},
+                                        "encoding": {"x": {"field": "Cylinders", "type": "ordinal"}, "y": {"field": "total_count", "type": "quantitative"}, "text": {"field": "total_count", "type": "quantitative"}}
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "height": 200,
+                        "width": 100,
+                        "layer": [
+                            {
+                                "transform": [{"aggregate": [{"op": "sum", "field": "num_cars", "as": "total_count"}], "groupby": ["Origin"]}],
+                                "mark": {"type": "bar", "tooltip": true},
+                                "encoding": {"x": {"field": "total_count", "type": "quantitative", "axis": null}, "y": {"field": "Origin", "type": "ordinal", "axis": null}, "tooltip":[{"field":"Origin","type":"ordinal","title":"Origin:"},{"field":"total_count","type":"quantitative","title":"合計:"}]}
+                            },
+                            {
+                                "transform": [{"aggregate": [{"op": "sum", "field": "num_cars", "as": "total_count"}], "groupby": ["Origin"]}],
+                                "mark": {"type": "text", "align": "left", "baseline": "middle", "dx": 3},
+                                "encoding": {"x": {"field": "total_count", "type": "quantitative"}, "y": {"field": "Origin", "type": "ordinal"}, "text": {"field": "total_count", "type": "quantitative"}}
+                            }
+                        ]
+                    }
+                ],
+                "config": {"view": {"stroke": "transparent"}, "axis": {"grid": true, "tickBand": "extent"}}
+            };
+
+            vegaEmbed('#vis', spec);
+        }
+    });
+});
+</script>
+
+</body>
+</html>
