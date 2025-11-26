@@ -1,0 +1,4 @@
+/* idが "Issues_CheckA_2_" で始まる要素内のチェックテキストを非表示 */
+[id^="Issues_CheckA_2_"] .check-text {
+  display: none;
+}
