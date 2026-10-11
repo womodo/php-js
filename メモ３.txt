@@ -1,0 +1,35 @@
+Excelグラフ（軽量の方だと）
+タイトル、軸のタイトル、判例がグラフと重なっている
+
+
+sample_WebAPI送信
+07:54:58 [1] Web APIにリクエスト送信  # JSONを送信して、返答から name を取り出す  method=POST url=https://httpbin.org/post headers=(非表示) body_type=json body={"name": "山田", "amount": 1200, "sent_at": "2026-10-11 07:54: json_path=json.name json_var=返答の名前
+07:54:58     失敗('latin-1' codec can't encode characters in position 13-14: ordinal not in range(256)) → リトライ 1/1
+07:55:00 ✖ 失敗: ステップ1「Web APIにリクエスト送信」で失敗: 'latin-1' codec can't encode characters in position 13-14: ordinal not in range(256)
+サンプルが動くように
+
+
+sample_為替レートを取得してExcelに記録
+実行は成功したが、「13/15 手順」 と表示される
+
+
+sample_画像を探してクリックする(練習ウィンドウで確認)
+[ WARN:0@0.225] global loadsave.cpp:278 cv::findDecoder imread_('C:\Users\masayuki\Downloads\tasuki\output\画像クリック練習_ボタン.png'): can't open/read file: check file path/integrity
+08:00:58 ✖ 失敗: ステップ6「画像が出るまで待つ」で失敗: Failed to read C:\Users\masayuki\Downloads\tasuki\output\画像クリック練習_ボタン.png because file is missing, has improper permissions, or is an unsupported or invalid format
+08:00:58   失敗時の画面: C:\Users\masayuki\Downloads\tasuki\logs\sample_画像を探してクリックする(練習ウィンドウで確認)_20261011_080051_error.png
+
+
+ブラウザの記録で、ダイアログが表示されない（自動でOKされる？）
+
+ブラウザ操作で、ダイアログの操作もできるように。
+（ダイアログ「これは alert ダイアログです。」に自動でOKしましたではなく）
+
+記録中の表示が邪魔で項目の選択がしにくい。動かせない？
+
+ブラウザの記録を強化（できるようにしてほしい）
+
+どの変数があるのか分からなくなってしまう。そのロボット内の変数一覧がどこかで見れたら。
+変数を使用する際に、変数名を選択できるように（（{{通貨1}}という書き方で良いが）
+
+ログに記録が途中で文字が切れる？
+”INV-2026-0003.pd”のように.pdfの最後が出力されない
